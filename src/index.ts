@@ -14,7 +14,7 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 
 // routes
-import authRouter from './routes';
+import {userRouter} from './routes';
 
 const app = express();
 
@@ -55,7 +55,7 @@ app.use(xss());
 app.use(mongoSanitize());
 //routes
 app.use(limit);
-app.use(authRouter);
+app.use(userRouter);
 
 mongoose.connect('mongodb://localhost/smartServer', {
     useNewUrlParser: true,

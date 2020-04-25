@@ -41,5 +41,17 @@ module.exports = {
             'error',
             'always',
         ],
+        'no-debugger': 2,
+        'no-dupe-else-if': 2,
+        'no-dupe-keys': 2,
+        'no-empty': 2,
+        'no-func-assign': 2,
+        'no-inner-declarations': 2,
+        'no-irregular-whitespace': 2,
+        'no-unreachable': 2,
+        'keyword-spacing': [
+            "error",
+            {"before": true}
+        ]
     }
 };
