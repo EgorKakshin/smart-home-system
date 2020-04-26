@@ -1,0 +1,14 @@
+{
+    "development": {
+        "node_port": 3000,
+        "data_base_url": "mongodb://localhost/smartServer",
+        "secret_phrase": "secret-phrase",
+        "token_life_time": "24h"
+    },
+    "production": {
+        "node_port": 3000,
+        "data_base_url": "mongodb://localhost/smartServer",
+        "secret_phrase": "secret-phrase",
+        "token_life_time": "24h"
+    }
+}

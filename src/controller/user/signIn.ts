@@ -3,7 +3,8 @@ import isEmpty from 'lodash/isEmpty';
 import validate from 'validate.js';
 
 import {ERROR_CODE, ERROR_MESSAGE, generateError} from '../errors';
-import UserSchema from '../../schemas/User';
+import UserSchema from '@schemas/User';
+import {generateJWT} from './utils';
 
 const signInConstraints = {
     username: {
@@ -62,5 +63,6 @@ export default async(params: Params) => {
         user: {
             username: userRecord.username,
         },
+        token: generateJWT(userRecord),
     };
 };

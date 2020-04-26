@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -12,14 +13,16 @@ import rateLimit from 'express-rate-limit';
 import xss from 'xss-clean';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
+import cors from 'cors';
 
+// config file
+const ENV_NAME = process.env.NODE_ENV || 'development';
+const config = require('@config/index.json')[ENV_NAME];
 // routes
-import {userRouter} from './routes';
+import {userRouter} from '@routes/index';
 
 const app = express();
 
-// Server constants
-const PORT = 3000;
 /**
  * Макмимальный размер тела запроса
  * Limit body payload for request
@@ -53,16 +56,17 @@ app.use(express.json({
 app.use(cookieParser());
 app.use(xss());
 app.use(mongoSanitize());
+app.use(cors());
 //routes
 app.use(limit);
 app.use(userRouter);
 
-mongoose.connect('mongodb://localhost/smartServer', {
+mongoose.connect(config.data_base_url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
 
-app.listen(PORT, () => {
+app.listen(config.node_port, () => {
     // eslint-disable-next-line no-console
-    console.log('Server start on PORT', PORT);
+    console.log('Server start on PORT', config.node_port);
 });
