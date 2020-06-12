@@ -2,6 +2,14 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
+export interface User {
+    _id: string,
+    username: string,
+    password: string,
+    controlQuestion: string,
+    controlQuestionResponse: string,
+}
+
 const UserSchema = new Schema({
     username: {
         type: String,
@@ -15,11 +23,11 @@ const UserSchema = new Schema({
     // Восстановление пароля
     controlQuestion: {
         type: String,
-        required: true,
+        // required: true,
     },
     controlQuestionResponse: {
         type: String,
-        required: true,
+        // required: true,
     }
 });
 

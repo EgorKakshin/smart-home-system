@@ -12,7 +12,7 @@ import {getUserAuthToken} from '@getters/user';
 const checkJWT = (request: Request, response: Response, next: NextFunction) => {
     const authToken = getUserAuthToken(request);
     if (!authToken) {
-        return response.sendStatus(403);
+        return response.send({isAuth: false});
     }
 
     let decodeToken;
@@ -20,13 +20,13 @@ const checkJWT = (request: Request, response: Response, next: NextFunction) => {
     try {
         decodeToken = <any>jwt.verify(authToken, config.secret_phrase);
     } catch (error) {
-        return response.sendStatus(403);
+        return response.send({isAuth: false});
     }
 
     const {username} = decodeToken;
 
-    response.setHeader('authorization', generateJWT({username}));
     request.body.username = username;
+    request.body.newToken = generateJWT({username});
     next();
 };
 

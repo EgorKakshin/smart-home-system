@@ -44,16 +44,16 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "module-alias": "^2.2.2",
-    "moment": "^2.24.0",
+    "moment": "^2.26.0",
     "mongoose": "^5.9.10",
     "validate.js": "^0.13.1",
     "xss-clean": "^0.1.1"
   },
   "_moduleAliases": {
-    "@config": "build/config",
     "@controller": "build/controller",
     "@routes": "build/routes",
     "@schemas": "build/schemas",
-    "@getters": "build/getters"
+    "@getters": "build/getters",
+    "@config": "build/config"
   }
 }

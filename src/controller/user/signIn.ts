@@ -29,12 +29,16 @@ interface Params {
 }
 
 export default async(params: Params) => {
-    const errors = validate(params, signInConstraints, {format: 'flat'});
+    const errors = validate(params, signInConstraints, {format: 'detailed'});
 
     if (!isEmpty(errors)) {
+        const message = errors.reduce((acc: any, error: any) => ({
+            ...acc,
+            [error.attribute]: error.error,
+        }), {});
         return generateError(
             ERROR_CODE.VALIDATION_ERROR,
-            errors.join('; ')
+            message,
         );
     }
 
@@ -43,26 +47,32 @@ export default async(params: Params) => {
     const userRecord: any = await UserSchema.findOne({username});
 
     if (!userRecord) {
+        const message = {
+            authUsername: ERROR_MESSAGE.USER_NOT_FOUND,
+        };
+
         return generateError(
             ERROR_CODE.USER_NOT_FOUND,
-            ERROR_MESSAGE.USER_NOT_FOUND,
+            message,
         );
     }
 
     const isPasswordCorrect = await argon2.verify(userRecord.password, password);
 
     if (!isPasswordCorrect) {
+        const message = {
+            authPassword: ERROR_MESSAGE.INCORRECT_PASSWORD,
+        };
         return generateError(
             ERROR_CODE.INCORRECT_PASSWORD,
-            ERROR_MESSAGE.INCORRECT_PASSWORD,
+            message,
         );
     }
 
     // в будущем надо возвращать токен
     return {
-        user: {
-            username: userRecord.username,
-        },
         token: generateJWT(userRecord),
+        username: userRecord.username,
+        isAuth: true,
     };
 };

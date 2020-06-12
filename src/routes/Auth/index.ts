@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import express, {Request, Response, request} from 'express';
+import express, {Request, Response} from 'express';
 import {signIn, signUp} from '@controller/user';
 import {checkJWT} from '@controller/user/utils';
 
@@ -26,9 +26,19 @@ router
     });
 
 router
-    .route('/test')
+    .route('/checkAuth')
     .get(checkJWT, async (request: Request, response: Response) => {
-        response.send({okey: true});
+        if (request.body.newToken) {
+            return response.send({
+                isAuth: true,
+                username: request.body.username,
+                token: request.body.newToken,
+            });
+        }
+
+        return response.send({
+            isAuth: false,
+        });
     });
 
 export default router;

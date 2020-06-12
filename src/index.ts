@@ -19,7 +19,7 @@ import cors from 'cors';
 const ENV_NAME = process.env.NODE_ENV || 'development';
 const config = require('@config/index.json')[ENV_NAME];
 // routes
-import {userRouter} from '@routes/index';
+import {userRouter, deviceRouter, roomRouter} from '@routes/index';
 
 const app = express();
 
@@ -32,7 +32,7 @@ const REQUESTS_SIZE = '10kb';
  * Количество запросов за RESET_TIME
  * Count of requests in RESET_TIME
  */
-const MAX_REQUESTS = 100;
+const MAX_REQUESTS = 5000;
 /**
  * Промежуток, на который запросы проверяются
  * Timeframe for which requests are checked/remebered
@@ -60,7 +60,10 @@ app.use(cors());
 //routes
 app.use(limit);
 app.use(userRouter);
+app.use(deviceRouter);
+app.use(roomRouter);
 
+mongoose.set('useFindAndModify', false);
 mongoose.connect(config.data_base_url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,

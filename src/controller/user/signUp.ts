@@ -22,11 +22,11 @@ const signUpConstraints = {
         },
     },
     controlQuestion: {
-        presence: true,
+        // presence: true,
         type: 'string',
     },
     controlQuestionResponse: {
-        presence: true,
+        // presence: true,
         type: 'string',
     },
 };
@@ -39,28 +39,35 @@ interface Params {
 }
 
 export default async (params: Params) => {
-    const errors = validate(params, signUpConstraints, {format: 'flat'});
+    const errors = validate(params, signUpConstraints, {format: 'detailed'});
 
     if (!isEmpty(errors)) {
+        const message = errors.reduce((acc: any, error: any) => ({
+            ...acc,
+            [error.attribute]: error.error,
+        }), {});
         return generateError(
             ERROR_CODE.VALIDATION_ERROR,
-            errors.join('; ')
+            message,
         );
     }
 
     const {
         username,
         password,
-        controlQuestion,
-        controlQuestionResponse,
+        controlQuestion = '',
+        controlQuestionResponse = '',
     } = params;
 
     const isUserCreate = await UserSchema.findOne({username});
 
     if (isUserCreate) {
+        const message = {
+            username: ERROR_MESSAGE.USER_IS_EXIST,
+        };
         return generateError(
             ERROR_CODE.USER_IS_EXIST,
-            ERROR_MESSAGE.USER_IS_EXIST,
+            message,
         );
     }
 
@@ -74,14 +81,18 @@ export default async (params: Params) => {
     })
         .save()
         .then((userRecord: any) => ({
-            user: {
-                username: userRecord.username,
-            },
+            isAuth: true,
+            username: userRecord.username,
             token: generateJWT(userRecord),
         }))
         // @TODO add logger
-        .catch(() => generateError(
-            ERROR_CODE.CREATE_NEW_USER_ERROR,
-            ERROR_MESSAGE.CREATE_NEW_USER_ERROR,
-        ));
+        .catch(() => {
+            const message = {
+                createUser: ERROR_MESSAGE.CREATE_NEW_USER_ERROR,                
+            };
+            return generateError(
+                ERROR_CODE.CREATE_NEW_USER_ERROR,
+                message,
+            );
+        });
 };
